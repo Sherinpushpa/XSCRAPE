@@ -9,6 +9,8 @@ import org.openqa.selenium.logging.LoggingPreferences;
 import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+import org.testng.Assert;
+import java.io.File;
 
 import java.util.logging.Level;
 // import io.github.bonigarcia.wdm.WebDriverManager;
@@ -17,15 +19,9 @@ import demo.wrappers.Wrappers;
 public class TestCases {
     ChromeDriver driver;
 
-    /*
-     * TODO: Write your tests here with testng @Test annotation. 
-     * Follow `testCase01` `testCase02`... format or what is provided in instructions
-     */
+    Wrappers wrapper;
 
-     
-    /*
-     * Do not change the provided methods unless necessary, they will help in automation and assessment
-     */
+   
     @BeforeTest
     public void startBrowser()
     {
@@ -47,6 +43,36 @@ public class TestCases {
         driver = new ChromeDriver(options);
 
         driver.manage().window().maximize();
+
+        wrapper = new Wrappers(driver);
+    }
+
+    @Test
+    public void testCase01() throws InterruptedException {
+        System.out.println("Start Test Case: testCase01");
+        wrapper.openUrl("https://www.scrapethissite.com/pages/");
+        Thread.sleep(1000);
+        wrapper.clickElement(By.xpath("//a[contains(text(),'Hockey Teams:')]"));
+        Thread.sleep(1000);
+        wrapper.collectTeamData(By.xpath("//th"));
+        wrapper.writeDataToJson(wrapper.teamDataList, "hockey-team-data.json");
+        System.out.println("End Test Case: testCase01");
+    }
+
+    @Test
+    public void testCase02() throws InterruptedException {
+        System.out.println("Start Test Case: testCase02");
+        wrapper.openUrl("https://www.scrapethissite.com/pages/");
+        Thread.sleep(1000);
+        wrapper.clickElement(By.xpath("//a[contains(text(),'Oscar Winning Films')]"));
+        Thread.sleep(1000);
+        wrapper.collectMovieDetails(By.xpath("//th"));
+        wrapper.writeDataToJson(wrapper.movieDetailsList,"oscar-winner-data.json");
+        File file = new File ("Output/" + "oscar-winner-data.json");
+
+        Assert.assertTrue(file.exists(),"File should exists in the output folder");
+        Assert.assertTrue(file.length() > 0, "File should not be empty");
+        System.out.println("End Test Case: testCase02");
     }
 
     @AfterTest
